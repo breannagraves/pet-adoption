@@ -1,0 +1,145 @@
+<! DOCTYPE html>
+    <html>
+
+    <head>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <style>
+            body {
+                background-image: url('https://wallpaperaccess.com/full/111153.jpg');
+            }
+        </style>
+        <script>
+            function loadPets(thenDo) { //need to hit api and get list of pets/ populate petNames list //2. add parameter thenDo
+                fetch("http://localhost:8000/") //need some way in our HTML to get pet name 
+                    .then((r) => r.text()) //promise for text in in response
+                    .then((d) => {
+                        // following three lines are asynchronous
+                        console.log(d);
+                        var pets = JSON.parse(d);
+                        //return pets; need to be able to give list item to populateList take away return and replace with call to thenDo
+                        thenDo(pets); // want to change this to a parameter, passing the name of a function as a parameter , recieving it with this name
+                        // then calling it later with this name 
+                    }); //at this point have string data back from api, need parse and add list
+            }
+
+            function populateList(pets) {
+                var theList = document.getElementById("petNames");
+
+                for (var pet of pets) { //for in, elements of an object, for of, elements of an array
+                    console.log(pet);
+                    var theListItem = document.createElement("li") //arguement is element we want to create
+                    theListItem.innerHTML = pet; //set inner HTML to pet name
+                    thelist.appendChild(theListItem); //add pet to list
+                }
+            }
+
+            function populateButtons(pets) {
+                var theList = document.getElementById("petNames");
+
+                for (var pet of pets) { //for in, elements of an object, for of, elements of an array
+                    console.log(pet);
+                    var theListItem = document.createElement("button") //arguement is element we want to create
+                    theListItem.innerHTML = "Read More About: " + pet; //set inner HTML
+                    document.body.appendChild(theListItem);
+                    //thelist.appendChild(theListItem); take away
+                }
+
+            }
+
+            function populateLinks(pets) {
+                var theList = document.getElementById("petNames");
+
+                for (var pet of pets) {
+                    console.log(pet);
+                    var theListItem = document.createElement("a") //arguement is element we want to create
+                    theListItem.innerHTML = "Read More About: " + pet + "<br \>"; //set inner HTML to pet name
+                    var url = "onePet.html?name=" + pet;
+                    console.log(url);
+                    theListItem.href = url;
+                    //a.href = "onePet.html" //can use this because in same folder
+                    document.body.appendChild(theListItem); //add pet to list
+                }
+
+            }
+
+            function deleteone(pet) {
+                fetch("http://localhost:8000/" + pet, {
+                    method: "DELETE"
+                })
+                    .then((r) => r.text())
+                    .then((d) => {
+                        console.log(d);
+                    });
+            }
+
+            // Write a function that adds a pet in which the data comes from a form that has input texts for Name, Age, Breed, and Species. The function should send a POST request to the API with the data from the form. The function should also clear the form after the POST request is sent.
+            function addPet(e) {
+                // e.preventDefault();
+                console.log("add pet");
+                fetch("http://localhost:8000/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById("name").value,
+                        age: document.getElementById("age").value,
+                        breed: document.getElementById("breed").value,
+                        species: document.getElementById("species").value
+                    })
+                })
+                    .then((r) => r.text())
+                    .then((d) => {
+                        console.log(d);
+                    });
+            }
+
+            function showForm() {
+                document.getElementById("petFormHolder").style.display = "block";
+                // add event listener to form submit button called addPet
+                document.getElementById("petForm").reset();
+                document.getElementById("petForm").addEventListener("submit", addPet);
+            }
+
+
+
+        </script>
+
+
+    </head>
+
+    <body style="font-family: sans-serif">
+        <h1>Welcome to the Pet Store</h1>
+        <!-- <button onclick = "dummy()"> Dummy </button> -->
+
+        <nav>
+            <button class="button" onclick="loadPets(populateLinks)"> Load List of Pets </button>
+            <button class="button" onclick="showForm()">Add Pet</button>
+        </nav>
+
+        
+        <ul id="petNames">
+            <h3>Pets available for adoption:</h3>
+        </ul>
+       
+
+        <!-- 
+        Write a form inside the div that contains text inputs for Name, Age, Breed, and Species that contain placeholder text that is capitalized and the inputs are separated by a line break. Hide the form by default.
+    -->
+
+        <div id="petFormHolder" style="display: none;">
+            <h4>Please Enroll a Pet</h4>
+            <form id="petForm">
+                <input id="name" type="text" placeholder="Name">
+                <br>
+                <input id="age" type="text" placeholder="Age">
+                <br>
+                <input id="breed" type="text" placeholder="Breed">
+                <br>
+                <input id="species" type="text" placeholder="Species">
+                <br>
+                <input id="button" type="submit" value="Submit">
+            </form>
+        </div>
+
+    </html>

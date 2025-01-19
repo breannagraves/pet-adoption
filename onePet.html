@@ -1,0 +1,153 @@
+<! DOCTYPE html>
+    <html>
+
+    <head>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <style>
+            body {
+                background-image: url('https://wallpaperaccess.com/full/111153.jpg');
+            }
+        </style>
+        <script>
+            console.log(window.location.search.substring(6));
+
+        </script>
+
+    </head>
+
+    <body style="font-family: sans-serif">
+        <h1>Pet Details</h1>
+        <!-- <button onclick = "loadPets(populateLinks)"> Load List of Pets </button>  -->
+        <nav>
+        <button class="button" onclick="deletePet()"> Adopt This Pet</button>
+        <button class="button" onclick="updatePet()"> Update Pet</button>
+        <button class="button" onclick="backToPets()"> Back to Pets</button>
+        </nav>
+        <ul id="petNames">
+            <h3 class="alignCenter"></h3>
+        </ul>
+        <div id="petInfo">
+        </div>
+        <div id="updatePetFormHolder" style="display: none;">
+            <form id="updatePetForm">
+                <label for="species">Species:</label>
+                <input type="text" id="species" name="species"><br><br>
+                <label for="breed">Breed:</label>
+                <input type="text" id="breed" name="breed"><br><br>
+                <label for="age">Age:</label>
+                <input type="text" id="age" name="age"><br><br>
+                <input id="button" type="submit" value="Submit">
+            </form>
+        </div>
+
+    </body>
+    <script defer>
+        function addPetToBrowser(data) {
+            document.getElementById("petInfo").innerHTML = "";
+            let petInfoName = document.getElementById("petInfo");
+            let petInfoItemName = document.createElement("h4");
+            petInfoItemName.innerHTML = `Name: ${window.location.search.substring(6)}`;
+            petInfoName.appendChild(petInfoItemName);
+
+            for (let key in data) {
+                console.log(key, data[key]);
+                let petInfo = document.getElementById("petInfo");
+                let petInfoItem = document.createElement("h4");
+                petInfoItem.innerHTML = `${key}: ${data[key]}`;
+                petInfo.appendChild(petInfoItem);
+            }
+        }
+
+        fetch("http://localhost:8000/" + window.location.search.substring(6))
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log("data", data);
+                console.log("Success");
+         
+                localStorage.setItem("pet", JSON.stringify(data));
+                addPetToBrowser(data);
+            })
+            .catch(
+                (e) => {
+                    console.log("Error: " + e);
+                }
+            );
+
+        // Create a function to delete a pet and then navigate back to the home page
+        function deletePet() {
+            fetch("http://localhost:8000/" + window.location.search.substring(6), {
+                method: "DELETE",
+            })
+                .then((response) => {
+                    return response.text();
+                })
+                .then((data) => {
+                    console.log("data", data);
+                    console.log("Success");
+                   
+                    window.location.href = "pets.html";
+                })
+                .catch(
+                    (e) => {
+                        console.log("Error: " + e);
+                    }
+                );
+        }
+
+        //function to update pet details
+        function updatePet() {
+            document.getElementById("updatePetFormHolder").style.display = "block";
+            document.getElementById("petInfo").style.display = "none";
+            let pet = JSON.parse(localStorage.getItem("pet"));
+            document.getElementById("species").value = pet.species;
+            document.getElementById("breed").value = pet.breed;
+            document.getElementById("age").value = pet.age;
+
+            document.getElementById("updatePetForm").addEventListenerdoc("submit", (e) => {
+                e.preventDefault();
+                let species = document.getElementById("species").value;
+                let breed = document.getElementById("breed").value;
+                let age = document.getElementById("age").value;
+                let pet = JSON.parse(localStorage.getItem("pet"));
+                let name = pet.name;
+                localStorage.setItem("currentName", window.location.search.substring(6));
+                let data = {
+                    name: name,
+                    species: species,
+                    breed: breed,
+                    age: age
+                };
+
+                fetch("http://localhost:8000/" + window.location.search.substring(6), {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then((response) => {
+                        return response.text();
+                    })
+                    .then((data) => {
+                        console.log("data", data);
+                        console.log("Success");
+                        console.log("name", localStorage.getItem("currentName"));
+                       
+                        window.location.href = "onePet.html?name=" + localStorage.getItem("currentName");
+                    })
+                    .catch(
+                        (e) => {
+                            console.log("Error: " + e);
+                        }
+                    );
+            });
+        }
+
+        //function to take us back to the home page
+        function backToPets() {
+        window.location.href = "pets.html";
+        }
+    </script>
+    </html>

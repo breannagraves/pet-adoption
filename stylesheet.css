@@ -1,0 +1,77 @@
+h1 {
+    text-align: center;
+    margin-top:60px;
+}
+
+h3 {
+    
+    color:#000000
+}
+
+h4 {
+    text-align: center;
+    color:#000000
+}
+
+
+.parent {
+    display: flex;
+}
+
+button {
+    display: inline-block;
+    justify-content: center;
+    font-weight: bold;
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #0d0e0d;
+    color:white; 
+    border-radius: 10px;
+    box-shadow:0cqb
+}
+
+.button:hover {
+    font-weight: bold;
+    background-color:#b6ddb9;
+    border-color: #b6ddb9;
+    transition: 0.7s;
+    color: black;
+}
+
+#button {
+    display: inline-block;
+    justify-content: center;
+    font-weight: bold;
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #0d0e0d;
+    color:white; 
+    border-radius: 10px;
+    box-shadow:0cqb
+    
+}
+
+
+#button:hover {
+    background-color:#b6ddb9;
+    border-color: #b6ddb9;
+    transition: 0.7s;
+    color: black;
+}
+
+nav {
+    text-align: center
+  }
+
+  #petFormHolder {
+    text-align: center;
+  }
+
+  #updatePetFormHolder {
+    text-align: center;
+  }
+
+  .alignCenter {
+    text-align: center;
+    padding-right: 40px;   
+  }
